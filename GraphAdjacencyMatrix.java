@@ -15,13 +15,13 @@ public class GraphAdjacencyMatrix {
 		int data;
 		String color;
 		Vertex parent;
-		int preTime, postTime;
+		int d, f;
 		Vertex(int val){
 			data=val;
 			color="white";
 			parent = null;
-			preTime =0;
-			postTime=0;
+			d =0;
+			f=0;
 		}
 	}
 
@@ -46,29 +46,29 @@ public class GraphAdjacencyMatrix {
 		return temp;
 	}
 
-	private void depthVisit(Vertex[] vertexList, int val) {
-		Vertex u = vertexList[val];
+	private void depthVisit(Vertex[] vertexArray, int val) {
+		Vertex u = vertexArray[val];
 		time++;
-		u.preTime = time;
+		u.d = time;
 		u.color = "gray";
 		IntStream.range(0,verticesSize).forEach(
 				index->{
 					if(matrix[val][index] == 1) {
-						Vertex v = vertexList[index];
+						Vertex v = vertexArray[index];
 						if(v.color.equals("white")) {
 							v.parent = u;
 							treeEdge.add(createPairs(u,v));
-							depthVisit(vertexList, index);
+							depthVisit(vertexArray, index);
 						}
 						else {
 							if(v.color.equals("gray")) {
 								backEdge.add(createPairs(u,v));
 							}
 							if(v.color.equals("black")) {
-								if(u.preTime < v.preTime) {
+								if(u.d < v.d) {
 									forwardEdge.add(createPairs(u,v));
 								}
-								else if(u.preTime > v.preTime) {
+								else if(u.d > v.d) {
 									crossEdge.add(createPairs(u,v));
 								}
 							}
@@ -78,20 +78,20 @@ public class GraphAdjacencyMatrix {
 				});
 		u.color = "black";
 		time++;
-		u.postTime = time;
+		u.f = time;
 
 
 	}
 
 	private void depthFirstTraverse(int val) {
 
-		Vertex[] vertexList = new Vertex[verticesSize];
+		Vertex[] vertexArray = new Vertex[verticesSize];
 
 		IntStream.range(0, verticesSize).forEach(index->{
-			vertexList[index] = new Vertex(index);});
+			vertexArray[index] = new Vertex(index);});
 		IntStream.range(0, verticesSize).forEach(u->{
-			if(vertexList[u].color.equals("white"))
-				depthVisit(vertexList, u);
+			if(vertexArray[u].color.equals("white"))
+				depthVisit(vertexArray, u);
 		});
 	}
 
